@@ -90,6 +90,17 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKey);
   }, [zoomed]);
 
+  // Передзавантажуємо поточне і наступне фото, щоб вони не «відставали» від тексту.
+  useEffect(() => {
+    [currentQuestion, currentQuestion + 1].forEach((i) => {
+      const q = questions[i];
+      if (q?.image) {
+        const img = new window.Image();
+        img.src = `${BP}${q.image}`;
+      }
+    });
+  }, [currentQuestion]);
+
   // Плавно докрутити до вердикту, коли картка «виросла» після відповіді.
   const feedbackRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -133,7 +144,7 @@ export default function Home() {
       {/* Neon doodle background */}
       <div className="fixed inset-0 z-0 overflow-hidden">
         <Image
-          src={`${BP}/bg-art.png`}
+          src={`${BP}/bg-art.jpg`}
           alt=""
           fill
           priority
