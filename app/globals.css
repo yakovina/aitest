@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/* Плавна «комп'ютерна» прокрутка + термінальний скролбар */
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #08a1cf #000e2a;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #000e2a;
+}
+::-webkit-scrollbar-thumb {
+  background: #08a1cf;
+  border: 2px solid #000e2a; /* гострі краї, без заокруглень */
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0bc3ea;
+}
+
+/* Поява контенту вердикту — швидкий «комп'ютерний» reveal */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+.reveal {
+  animation: reveal 0.28s ease-out both;
+}
+
+/* Моргаючий термінальний курсор у заголовку */
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.cursor-blink {
+  animation: blink 1.05s step-end infinite;
+}
+
+/* Бренд-шрифти «Хмарочоса»: Open Sans — заголовки/інтерфейс, Lora — текст для читання */
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("/fonts/opensans.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Lora";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/lora.woff2") format("woff2");
+}
+
+body {
+  font-family: "Open Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Заголовки — гротеск Open Sans (без засічок), як назва фото «степи 123». */
+.headline {
+  font-family: "Open Sans", system-ui, sans-serif;
+}
+
+/* Тексти для читання (описи, пояснення, вступ) — серифна Lora (із засічками). */
+.prose {
+  font-family: "Lora", Georgia, serif;
+}
+
+/* Буквиця на першому абзаці вступу — журнальний акцент */
+.dropcap::first-letter {
+  float: left;
+  font-family: "Lora", Georgia, serif;
+  font-weight: 700;
+  font-size: 3.1em;
+  line-height: 0.82;
+  margin: 0.04em 0.1em 0 0;
+  color: #000e2a;
+}
+
+/* HUD-стиль для технічних підписів і цифр — той самий Open Sans,
+   «технічність» дають верхній регістр і розрядка (tracking), а не окремий шрифт. */
+.mono {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Єдиний фон карток — суцільний блакитний, однаковий усюди */
+.card {
+  background: rgb(212, 249, 255);
+}
+
+/* Зрізані кути-фаски, як у sci-fi інтерфейсах */
+.clip-tech {
+  clip-path: polygon(
+    0 16px,
+    16px 0,
+    100% 0,
+    100% calc(100% - 16px),
+    calc(100% - 16px) 100%,
+    0 100%
+  );
+}
