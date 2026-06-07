@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { intro, questions, getLevel, type GameState } from "@/data/quiz";
+import ShareButtons from "./ShareButtons";
+import { SITE_URL, TEST_SHARE_TEXT, TEST_SHARE_TITLE, resultShareUrl } from "./share";
 
 const NAVY = "#000e2a";
 const ICE = "#d4f9ff";
@@ -101,11 +103,12 @@ export default function Home() {
     });
   }, [currentQuestion]);
 
-  // Плавно докрутити до вердикту, коли картка «виросла» після відповіді.
-  const feedbackRef = useRef<HTMLDivElement>(null);
+  // Після відповіді докручуємо до ВЕРХУ картки — щоб під лого-хедером
+  // було видно фото з його назвою, а не одразу пояснення.
+  const cardRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (gameState === "feedback") {
-      feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [gameState]);
 
@@ -316,12 +319,22 @@ export default function Home() {
                 </button>
               </div>
             </Panel>
+            <div className="mt-5 flex justify-center">
+              <ShareButtons
+                url={SITE_URL}
+                text={TEST_SHARE_TEXT}
+                title={TEST_SHARE_TITLE}
+                label="Поділитись тестом"
+                tone="dark"
+                center
+              />
+            </div>
           </div>
         )}
 
         {/* ── PLAYING / FEEDBACK (на одній картці) ─────────────── */}
         {(gameState === "playing" || gameState === "feedback") && (
-          <div className="w-full max-w-3xl">
+          <div ref={cardRef} className="w-full max-w-3xl scroll-mt-[72px]">
             <Panel>
               <div style={{ background: NAVY }}>
                 {/* HUD header */}
@@ -424,7 +437,7 @@ export default function Home() {
                   <div className="grid grid-cols-1 sm:grid-cols-2">
                     <button
                       onClick={() => handleAnswer(true)}
-                      className="group relative flex flex-col justify-center gap-1 overflow-hidden border-b-2 border-[#000e2a] bg-[#d4f9ff] p-5 pr-[72px] text-left transition-all hover:bg-[#000e2a] hover:shadow-[inset_0_0_0_1px_#08a1cf,0_0_22px_rgba(8,161,207,0.55)] sm:border-b-0 sm:border-r-2 sm:p-6 sm:pr-28"
+                      className="group relative flex flex-col justify-center gap-1 overflow-hidden border-b-2 border-[#08a1cf] bg-[#d4f9ff] p-5 pr-[72px] text-left transition-all hover:bg-[#000e2a] hover:shadow-[inset_0_0_0_1px_#08a1cf,0_0_22px_rgba(8,161,207,0.55)] sm:border-b-0 sm:border-r-2 sm:p-6 sm:pr-28"
                     >
                       <span className="text-base font-black uppercase tracking-wide text-[#000e2a] group-hover:text-[#08a1cf]">
                         Це ШІ
@@ -460,7 +473,7 @@ export default function Home() {
                     </button>
                   </div>
                 ) : (
-                  <div ref={feedbackRef} className="reveal card" style={{ color: NAVY }}>
+                  <div className="reveal card" style={{ color: NAVY }}>
                     {/* вердикт як термінальний readout — суцільна плашка в стилі HUD гри */}
                     <div
                       className="mono flex items-center gap-3 px-5 py-4 uppercase tracking-[0.2em] text-white sm:px-8"
@@ -514,6 +527,16 @@ export default function Home() {
                 )}
               </div>
             </Panel>
+            <div className="mt-5 flex justify-center">
+              <ShareButtons
+                url={SITE_URL}
+                text={TEST_SHARE_TEXT}
+                title={TEST_SHARE_TITLE}
+                label="Поділитись тестом"
+                tone="dark"
+                center
+              />
+            </div>
           </div>
         )}
 
@@ -573,6 +596,16 @@ export default function Home() {
                   >
                     [ Пройти ще раз ]
                   </button>
+
+                  {/* шер результату — лінк на свою /r/{slug}/ з OG-карткою рівня */}
+                  <div className="mt-6 border-t pt-5" style={{ borderColor: "rgba(0,14,42,0.12)" }}>
+                    <ShareButtons
+                      url={resultShareUrl(level.slug)}
+                      text={level.shareText}
+                      title={level.title}
+                    />
+                  </div>
+
                   <p
                     className="mt-6 border-t pt-4 text-xs uppercase tracking-[0.2em]"
                     style={{ borderColor: "rgba(0,14,42,0.12)", color: "rgba(0,14,42,0.5)" }}
