@@ -81,7 +81,6 @@ export default function Home() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [wasCorrect, setWasCorrect] = useState(false);
-  const [showMore, setShowMore] = useState(false);
   const [zoomed, setZoomed] = useState(false); // фото відкрите на весь екран
 
   // Закрити зум по Esc
@@ -261,20 +260,12 @@ export default function Home() {
                 </div>
 
                 <div className="prose space-y-3 text-sm leading-relaxed sm:text-base">
-                  <p className="dropcap">{renderExplanation(intro[0])}</p>
-                  {showMore &&
-                    intro
-                      .slice(1, -1)
-                      .map((p, i) => <p key={i}>{renderExplanation(p)}</p>)}
-                  <p>{renderExplanation(intro[intro.length - 1])}</p>
+                  {intro.map((p, i) => (
+                    <p key={i} className={i === 0 ? "dropcap" : undefined}>
+                      {renderExplanation(p)}
+                    </p>
+                  ))}
                 </div>
-                <button
-                  onClick={() => setShowMore((v) => !v)}
-                  className="mt-3 text-sm font-bold underline decoration-2 underline-offset-4 transition-colors hover:opacity-70"
-                  style={{ color: NAVY }}
-                >
-                  {showMore ? "Згорнути ↑" : "Читати більше ↓"}
-                </button>
 
                 {/* Як це працює — 3 кроки */}
                 <div
